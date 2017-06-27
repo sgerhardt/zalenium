@@ -4,7 +4,8 @@
 FROM ubuntu:xenial-20170619
 ENV UBUNTU_FLAVOR="xenial" \
     UBUNTU_DATE="20170619"
-
+ENV DART_ARCHIVE_URL https://storage.googleapis.com/dart-archive/channels/stable/release/latest
+ENV PATH $PATH:/usr/lib/dart/bin
 #== Ubuntu flavors - common
 RUN  echo "deb http://archive.ubuntu.com/ubuntu ${UBUNTU_FLAVOR} main universe\n" > /etc/apt/sources.list \
   && echo "deb http://archive.ubuntu.com/ubuntu ${UBUNTU_FLAVOR}-updates main universe\n" >> /etc/apt/sources.list \
@@ -235,6 +236,11 @@ RUN wget -nv -O /usr/bin/gosu \
         "https://github.com/tianon/gosu/releases/download/1.10/gosu-amd64" \
   && chmod +x /usr/bin/gosu \
   && gosu root bash -c 'whoami' | grep root
+
+RUN wget $DART_ARCHIVE_URL/sdk/dartsdk-linux-x64-release.zip \
+  && unzip dartsdk-linux-x64-release.zip \
+  && cp dart-sdk/* /usr/local -r \
+  && rm -rf dartsdk-linux-x64-release.zip
 
 #=====================
 # Get docker binaries
